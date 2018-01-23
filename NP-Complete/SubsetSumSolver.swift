@@ -1,4 +1,3 @@
-//
 //  SubsetSumSolver.swift
 //
 //  Provides a pseudo-polynomial to exponential solution to the NP-Complete Subset Sum Problem.
@@ -8,7 +7,6 @@
 //  point in order to lower running times.
 //
 //  Created by Kewin Remeczki on 22.01.18.
-//
 
 import Foundation
 
