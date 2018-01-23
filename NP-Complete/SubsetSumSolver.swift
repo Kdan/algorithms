@@ -1,3 +1,15 @@
+//
+//  SubsetSumSolver.swift
+//
+//  Provides a pseudo-polynomial to exponential solution to the NP-Complete Subset Sum Problem.
+//  As the complexity depends on the input (naïve O(2^N) and dynamic O(sN)) this algorithm selects
+//  the most proper approach, depending on the input, and returns the first found solution.
+//  The naïve algorithm utilises multithreading through GCD and a mean-subset-size starting
+//  point in order to lower running times.
+//
+//  Created by Kewin Remeczki on 22.01.18.
+//
+
 import Foundation
 
 // Required OS X 10.10 availability check (due to the use of the newer GCD API).
