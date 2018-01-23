@@ -3,7 +3,7 @@
 //  Provides a pseudo-polynomial to exponential solution to the NP-Complete Subset Sum Problem.
 //  As the complexity depends on the input (naïve O(2^N) and dynamic O(sN)) this algorithm selects
 //  the most proper approach, depending on the input, and returns the first found solution.
-//  The naïve algorithm utilises multithreading through GCD and a mean-subset-size starting
+//  The naïve algorithm utilises multithreading through GCD and a median-subset-size starting
 //  point in order to lower running times.
 //
 //  Created by Kewin Remeczki on 22.01.18.
@@ -21,7 +21,7 @@ public class SubsetSumSolver {
     private var superset: [Int] = []
     private var sum: Int = 0
     
-    /// DispatchGroup for the concurrent naive algorithm.
+    /// DispatchGroup for the concurrent naïve algorithm.
     private let tasks = DispatchGroup()
     
     // MARK: - Public functions
@@ -54,21 +54,21 @@ public class SubsetSumSolver {
     
     /// Solves the problem by using a naive approach:
     /// Generate all subsets for the superset and check if the sum of any of them equals the desired sum.
-    /// This algorithm is improved by using the average subset size
+    /// This algorithm is improved by using mutlithreading and starting with the median subset size.
     /// - Returns: A solution (Set<Int>) or nil.
     private func solveNaïvely() -> Set<Int>? {
-        // Find the size of the average-entry subset that solves the problem.
-        let averageSize = averageSubsetSize()
+        // Find the size of the median-entry subset that solves the problem.
+        let medianSize = medianSubsetSize()
         
-        // Starting from the averageSize, create a concurrent task for each size of subsets until a solution is found or all possible subsets have been checked.
-        let iterations = min(max(superset.count - averageSize, averageSize), superset.count)
+        // Starting from the medianSize, create a concurrent task for each size of subsets until a solution is found or all possible subsets have been checked.
+        let iterations = min(max(superset.count - medianSize, medianSize), superset.count)
         let _ = DispatchQueue.global(qos: .userInitiated)
         DispatchQueue.concurrentPerform(iterations: iterations) { i in
             if solution != nil {
                 return
             }
-            let larger = averageSize + i
-            let smaller = averageSize - i
+            let larger = medianSize + i
+            let smaller = medianSize - i
             
             if larger <= superset.count {
                 build(size: larger)
@@ -83,7 +83,7 @@ public class SubsetSumSolver {
     
     /// Finds the size of the subset if all entries in the superset were equal to the median.
     /// - Returns: The size of the subset of median entries as an Int.
-    private func averageSubsetSize() -> Int {
+    private func medianSubsetSize() -> Int {
         let set = superset.sorted()
         let medianIndex = max(0, Int(set.count/2) - 1)
         return sum / set[medianIndex]
